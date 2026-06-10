@@ -8,9 +8,20 @@ export interface RegisterInput {
   preferredLanguage?: "en" | "am" | "om";
 }
 
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
 export interface SafeUserResponse {
   id: string;
   fullName: string;
   email: string;
   role: Role;
+}
+
+
+export interface LoginResponse {
+  token: string;
+  user: SafeUserResponse;
 }
