@@ -74,4 +74,15 @@ static async me(
   }
 }
 
+static async adminOnly(
+  req: AuthRequest,
+  res: Response
+): Promise<void> {
+
+  res.status(200).json({
+    success: true,
+    message: "Welcome Admin!",
+  });
+}
+
 }
