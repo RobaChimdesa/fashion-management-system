@@ -78,4 +78,20 @@ export class AuthService {
       },
     };
   }
+
+  static async getCurrentUser(userId: string) {
+  const user = await Account.findById(userId)
+    .select("-password");
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return {
+    id: user.id,
+    fullName: user.fullName,
+    email: user.email,
+    role: user.role,
+  };
+}
 }

@@ -5,6 +5,7 @@
 
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
+import { AuthRequest } from "../../types/auth-request";
 
 export class AuthController {
   static async register(req: Request, res: Response) {
@@ -39,4 +40,38 @@ export class AuthController {
       });
     }
   }
+static async me(
+  req: AuthRequest,
+  res: Response
+): Promise<void> {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+      return;
+    }
+
+    const user =
+      await AuthService.getCurrentUser(userId);
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "User not found",
+    });
+  }
+}
+
 }
