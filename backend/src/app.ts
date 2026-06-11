@@ -8,7 +8,6 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/v1/auth", authRoutes);
-console.log("Auth routes registered");
 app.get("/", (_req, res) => {
   res.json({
     success: true,
