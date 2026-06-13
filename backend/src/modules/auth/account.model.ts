@@ -36,8 +36,7 @@ const accountSchema = new Schema<IAccount>(
 
     phone: {
       type: String,
-      required: true,
-      trim: true,
+      
     },
 
     role: {

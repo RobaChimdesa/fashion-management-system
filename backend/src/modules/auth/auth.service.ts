@@ -9,6 +9,7 @@ import { RegisterInput, SafeUserResponse } from "./auth.types";
 import jwt from "jsonwebtoken";
 import { env } from "../../config/env";
 import { LoginInput, LoginResponse } from "./auth.types";
+import { Customer } from "../customer/customer.model";
 import { Role } from "./auth.constants";
 
 export class AuthService {
@@ -29,6 +30,12 @@ export class AuthService {
       password: hashedPassword,
       role: Role.CUSTOMER,
     });
+
+    if (user.role === Role.CUSTOMER) {
+      await Customer.create({
+        accountId: user._id,
+      });
+    }
 
     return {
       id: user._id.toString(),
@@ -80,18 +87,17 @@ export class AuthService {
   }
 
   static async getCurrentUser(userId: string) {
-  const user = await Account.findById(userId)
-    .select("-password");
+    const user = await Account.findById(userId).select("-password");
 
-  if (!user) {
-    throw new Error("User not found");
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+    };
   }
-
-  return {
-    id: user.id,
-    fullName: user.fullName,
-    email: user.email,
-    role: user.role,
-  };
-}
 }
