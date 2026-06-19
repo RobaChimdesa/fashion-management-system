@@ -1,5 +1,10 @@
 import { Types } from "mongoose";
 
+export enum OrderType {
+  PRODUCT = "PRODUCT",
+  CUSTOM = "CUSTOM",
+}
+
 export enum OrderStatus {
   PENDING = "PENDING",
   CONFIRMED = "CONFIRMED",
@@ -15,19 +20,6 @@ export enum PaymentStatus {
   PAID = "PAID",
 }
 
-export enum OrderType {
-  PRODUCT = "PRODUCT",
-  CUSTOM = "CUSTOM",
-}
-
-export enum ServiceType {
-  WEDDING = "WEDDING",
-  CULTURAL = "CULTURAL",
-  SIRBA = "SIRBA",
-  CASUAL = "CASUAL",
-  CUSTOM = "CUSTOM",
-}
-
 export interface IOrder {
   customerId: Types.ObjectId;
 
@@ -41,12 +33,6 @@ export interface IOrder {
 
   customDescription?: string;
 
-  serviceType: ServiceType;
-
-  occasion?: string;
-
-  notes?: string;
-
   status: OrderStatus;
 
   paymentStatus: PaymentStatus;
@@ -54,5 +40,6 @@ export interface IOrder {
   estimatedDeliveryDate?: Date;
 
   totalPrice?: number;
-}
 
+  notes?: string;
+}

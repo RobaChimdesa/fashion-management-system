@@ -1,10 +1,11 @@
 import mongoose, { Schema } from "mongoose";
+import { CallbackWithoutResultAndOptionalError } from "mongoose";
 
 import {
   IOrder,
+  OrderType,
   OrderStatus,
   PaymentStatus,
-  ServiceType,
 } from "./order.types";
 
 const orderSchema = new Schema<IOrder>(
@@ -21,15 +22,26 @@ const orderSchema = new Schema<IOrder>(
       required: true,
     },
 
-    serviceType: {
+    orderType: {
       type: String,
-      enum: Object.values(ServiceType),
+      enum: Object.values(OrderType),
       required: true,
     },
 
-    occasion: String,
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+    },
 
-    notes: String,
+    customDesignImages: [
+      {
+        type: String,
+      },
+    ],
+
+    customDescription: {
+      type: String,
+    },
 
     status: {
       type: String,
@@ -45,14 +57,51 @@ const orderSchema = new Schema<IOrder>(
 
     estimatedDeliveryDate: Date,
 
-    totalPrice: Number,
+    totalPrice: {
+      type: Number,
+      min: 0,
+    },
+
+    notes: String,
   },
   {
     timestamps: true,
   }
 );
 
-export const Order = mongoose.model(
+
+orderSchema.pre("validate", function () {
+  if (
+    this.orderType === OrderType.PRODUCT &&
+    !this.productId
+  ) {
+    throw new Error(
+      "Product is required for product orders"
+    );
+  }
+
+  if (this.orderType === OrderType.CUSTOM) {
+    if (
+      !this.customDesignImages ||
+      this.customDesignImages.length === 0
+    ) {
+      throw new Error(
+        "At least one custom design image is required"
+      );
+    }
+
+    if (
+      !this.customDescription ||
+      this.customDescription.trim() === ""
+    ) {
+      throw new Error(
+        "Custom description is required"
+      );
+    }
+  }
+});
+
+export const Order = mongoose.model<IOrder>(
   "Order",
   orderSchema
 );
