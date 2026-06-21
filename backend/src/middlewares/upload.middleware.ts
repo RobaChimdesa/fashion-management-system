@@ -1,21 +1,51 @@
+// import multer from "multer";
+
+// import { CloudinaryStorage } from "multer-storage-cloudinary";
+
+// import cloudinary from "../config/cloudinary";
+
+// const storage = new CloudinaryStorage({
+//   cloudinary,
+
+//   params: async (req, file) => ({
+//     folder: "fashion-management",
+
+//     allowed_formats: ["jpg", "jpeg", "png", "webp"],
+
+//     public_id: Date.now() + "-" + file.originalname,
+//   }),
+// });
+
+// export const upload = multer({
+//   storage,
+// });
 import multer from "multer";
 
-import { CloudinaryStorage } from "multer-storage-cloudinary";
+const storage =
+  multer.diskStorage({
+    destination: (
+      req,
+      file,
+      cb
+    ) => {
+      cb(null, "uploads/");
+    },
 
-import cloudinary from "../config/cloudinary";
+    filename: (
+      req,
+      file,
+      cb
+    ) => {
+      cb(
+        null,
+        Date.now() +
+          "-" +
+          file.originalname
+      );
+    },
+  });
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-
-  params: async (req, file) => ({
-    folder: "fashion-management",
-
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
-
-    public_id: Date.now() + "-" + file.originalname,
-  }),
-});
-
-export const upload = multer({
-  storage,
-});
+export const upload =
+  multer({
+    storage,
+  });

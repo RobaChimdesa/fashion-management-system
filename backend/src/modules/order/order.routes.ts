@@ -27,6 +27,13 @@ router.get(
   authorize(Role.CUSTOMER),
   OrderController.getMyOrders,
 );
+router.get(
+  "/",
+  authenticate,
+  authorize(Role.ADMIN, Role.STAFF),
+  OrderController.getOrderById,
+);
+
 // router.get(
 //   "/my-stats",
 //   authenticate,
