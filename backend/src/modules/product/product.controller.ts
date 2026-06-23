@@ -1,8 +1,7 @@
-import { Response } from "express";
-
+import {Request,  Response } from "express";
 import { ProductService } from "./product.service";
 import { AuthRequest } from "../../types/auth-request";
-
+import { UploadService } from "../upload/upload.service";
 export class ProductController {
   static async createProduct(req: AuthRequest, res: Response) {
     try {
@@ -101,4 +100,49 @@ export class ProductController {
       });
     }
   }
+
+   static async uploadImage(
+    req: Request,
+    res: Response
+  ) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: "No file uploaded",
+        });
+      }
+
+      const result =
+        await UploadService.uploadImage(
+          req.file.path
+        );
+
+      return res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error: any) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  static async getTopRatedProducts(
+  req: Request,
+  res: Response
+) {
+  const products =
+    await ProductService.getTopRatedProducts();
+
+  return res.status(200).json({
+    success: true,
+    data: products,
+  });
+}
+
+
+
 }

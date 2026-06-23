@@ -7,9 +7,17 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize.middleware";
 
 import { Role } from "../auth/auth.constants";
-
+import { upload } from "../../middlewares/upload.middleware";
+import { UploadService } from "../upload/upload.service";
 const router = Router();
 
+router.post(
+  "/upload-image",
+  authenticate,
+  authorize(Role.ADMIN, Role.STAFF),
+  upload.single("image"),
+  ProductController.uploadImage,
+);
 router.post(
   "/",
   authenticate,
@@ -18,6 +26,7 @@ router.post(
 );
 
 router.get("/", ProductController.getAllProducts);
+router.get("/top-rated", ProductController.getTopRatedProducts);
 
 router.get("/:id", ProductController.getProductById);
 

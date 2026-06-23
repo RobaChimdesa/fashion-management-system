@@ -9,6 +9,7 @@ import uploadRoutes from "./modules/upload/upload.routes";
 import orderRoutes from "./modules/order/order.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes";
 import notificationRoutes from "./modules/notification/notification.routes";
+import reviewRoutes from "./modules/review/review.routes";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/v1/uploads", uploadRoutes);
 app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
 
 app.get("/", (_req, res) => {
   res.json({

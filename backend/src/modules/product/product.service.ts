@@ -18,18 +18,14 @@ export class ProductService {
     culturalStyle?: string;
     page?: string;
     limit?: string;
+    sort?: "price_asc" | "price_desc" | "newest";
   }) {
-    const {
-      search,
-      category,
-      culturalStyle,
-      page = "1",
-      limit = "10",
-    } = query;
+    const { search, category, culturalStyle,  page = "1", limit = "10", sort } = query;
 
     const filter: Record<string, any> = {
-  isAvailable: true,
-};
+      isAvailable: true,
+    };
+
 
     // Search by product name
     if (search) {
@@ -48,30 +44,41 @@ export class ProductService {
     if (culturalStyle) {
       filter.culturalStyle = culturalStyle;
     }
+     let productQuery = Product.find(filter);
+
+    if (query.sort === "price_asc") {
+      productQuery = productQuery.sort({
+        price: 1,
+      });
+    }
+
+    if (query.sort === "price_desc") {
+      productQuery = productQuery.sort({
+        price: -1,
+      });
+    }
+
+    if (query.sort === "newest") {
+      productQuery = productQuery.sort({
+        createdAt: -1,
+      });
+    }
 
     const currentPage = parseInt(page);
 
     const pageSize = parseInt(limit);
 
-    const skip =
-      (currentPage - 1) * pageSize;
+    const skip = (currentPage - 1) * pageSize;
 
-    const products =
-      await Product.find(filter)
-        .populate(
-          "createdBy",
-          "fullName email"
-        )
-        .skip(skip)
-        .limit(pageSize)
-        .sort({
-          createdAt: -1,
-        });
+    const products = await Product.find(filter)
+      .populate("createdBy", "fullName email")
+      .skip(skip)
+      .limit(pageSize)
+      .sort({
+        createdAt: -1,
+      });
 
-    const total =
-      await Product.countDocuments(
-        filter
-      );
+    const total = await Product.countDocuments(filter);
 
     return {
       data: products,
@@ -83,9 +90,7 @@ export class ProductService {
 
         total,
 
-        totalPages: Math.ceil(
-          total / pageSize
-        ),
+        totalPages: Math.ceil(total / pageSize),
       },
     };
   }
@@ -135,4 +140,13 @@ export class ProductService {
       message: "Product removed successfully",
     };
   }
+
+  static async getTopRatedProducts() {
+  return await Product.find()
+    .sort({
+      averageRating: -1,
+      totalReviews: -1,
+    })
+    .limit(10);
+}
 }

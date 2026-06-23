@@ -1,10 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-import {
-  IProduct,
-  ProductCategory,
-  CulturalStyle,
-} from "./product.types";
+import { IProduct, ProductCategory, CulturalStyle } from "./product.types";
 
 const productSchema = new Schema<IProduct>(
   {
@@ -37,7 +33,7 @@ const productSchema = new Schema<IProduct>(
       },
     ],
 
-    estimatedPrice: {
+    Price: {
       type: Number,
       required: true,
       min: 0,
@@ -53,13 +49,20 @@ const productSchema = new Schema<IProduct>(
       ref: "Account",
       required: true,
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+
+    totalReviews: {
+      type: Number,
+      default: 0,
+    },
+
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export const Product = mongoose.model<IProduct>(
-  "Product",
-  productSchema
-);
+export const Product = mongoose.model<IProduct>("Product", productSchema);
