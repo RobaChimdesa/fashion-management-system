@@ -15,7 +15,12 @@ export class ReviewService {
       throw new Error("You can only review products you have received");
     }
 
-    return await Review.create(payload);
+    // return await Review.create(payload);
+    const review = await Review.create(payload);
+
+    await this.updateProductRating(payload.productId);
+
+    return review;
   }
 
   static async updateReview(
@@ -32,15 +37,32 @@ export class ReviewService {
       throw new Error("Review not found");
     }
 
+    // review.rating = payload.rating ?? review.rating;
+    // review.comment = payload.comment ?? review.comment;
+    // await review.save();
+    // return review;
     review.rating = payload.rating ?? review.rating;
-
     review.comment = payload.comment ?? review.comment;
 
     await review.save();
 
+    await this.updateProductRating(review.productId.toString());
+
     return review;
   }
 
+  // static async deleteReview(reviewId: string, customerId: string) {
+  //   const review = await Review.findOneAndDelete({
+  //     _id: reviewId,
+  //     customerId,
+  //   });
+
+  //   if (!review) {
+  //     throw new Error("Review not found");
+  //   }
+
+  //   return true;
+  // }
   static async deleteReview(reviewId: string, customerId: string) {
     const review = await Review.findOneAndDelete({
       _id: reviewId,
@@ -50,6 +72,8 @@ export class ReviewService {
     if (!review) {
       throw new Error("Review not found");
     }
+
+    await this.updateProductRating(review.productId.toString());
 
     return true;
   }
@@ -63,67 +87,39 @@ export class ReviewService {
         createdAt: -1,
       });
   }
-
-  static async getProductRating(productId: string) {
-    const result = await Review.aggregate([
-      {
-        $match: {
-          productId: new Types.ObjectId(productId),
+   static async updateProductRating(productId: string) {
+  const result = await Review.aggregate([
+    {
+      $match: {
+        productId: new Types.ObjectId(productId),
+      },
+    },
+    {
+      $group: {
+        _id: "$productId",
+        averageRating: {
+          $avg: "$rating",
+        },
+        totalReviews: {
+          $sum: 1,
         },
       },
-      {
-        $group: {
-          _id: "$productId",
-          averageRating: {
-            $avg: "$rating",
-          },
+    },
+  ]);
 
-          totalReviews: {
-            $sum: 1,
-          },
-        },
-      },
-    ]);
+  const stats = result[0] || {
+    averageRating: 0,
+    totalReviews: 0,
+  };
 
-    return (
-      result[0] || {
-        averageRating: 0,
-        totalReviews: 0,
-      }
-    );
-  }
-  static async updateProductRating(productId: string) {
-    const result = await Review.aggregate([
-      {
-        $match: {
-          productId: new Types.ObjectId(productId),
-        },
-      },
-
-      {
-        $group: {
-          _id: "$productId",
-
-          averageRating: {
-            $avg: "$rating",
-          },
-
-          totalReviews: {
-            $sum: 1,
-          },
-        },
-      },
-    ]);
-
-    const stats = result[0] || {
-      averageRating: 0,
-      totalReviews: 0,
-    };
-
-    await Product.findByIdAndUpdate(productId, {
-      averageRating: Number(stats.averageRating).toFixed(1),
-      totalReviews: stats.totalReviews,
-    });
-  }
-
+  await Product.findByIdAndUpdate(productId, {
+    averageRating: Number(
+      Number(stats.averageRating).toFixed(1)
+    ),
+    totalReviews: stats.totalReviews,
+  });
 }
+  
+}
+
+

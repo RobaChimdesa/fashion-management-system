@@ -41,12 +41,14 @@ export default app;
 // ✅ Product Module
 // ✅ Order Module
 // ✅ Dashboard Module
-
-// the left modules
 // 1. Notification Module
 // 2. File Upload Module
+// 6. Review & Rating Module
+
+
+
+// the left modules
 // 3. Product Inventory Module
 // 4. Staff Management Module
 // 5. Payment Module
-// 6. Review & Rating Module
 // 7. Reporting Module
