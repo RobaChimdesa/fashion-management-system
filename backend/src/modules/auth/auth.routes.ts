@@ -17,4 +17,7 @@ router.get(
   authorize(Role.ADMIN),
   AuthController.adminOnly,
 );
+
+
+
 export default router;
