@@ -11,6 +11,7 @@ import dashboardRoutes from "./modules/dashboard/dashboard.routes";
 import notificationRoutes from "./modules/notification/notification.routes";
 import reviewRoutes from "./modules/review/review.routes";
 import analyticsRoutes from "./modules/analytics/analytics.routes";
+import appointmentRoutes from "./modules/appointment/appointment.routes";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
+app.use("/api/v1/appointments", appointmentRoutes);
 
 app.get("/", (_req, res) => {
   res.json({
@@ -46,8 +48,6 @@ export default app;
 // 1. Notification Module
 // 2. File Upload Module
 // 6. Review & Rating Module
-
-
 
 // the left modules
 // 3. Product Inventory Module
