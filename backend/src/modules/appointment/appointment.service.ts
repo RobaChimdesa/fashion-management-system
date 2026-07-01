@@ -82,9 +82,8 @@ export class AppointmentService {
     return await Appointment.find({
       customerId,
     })
-      .populate("productId", "name images")
+      .populate("productId")
       .populate("orderId")
-      .populate("staffId")
       .sort({
         appointmentDate: 1,
       });
@@ -101,13 +100,14 @@ export class AppointmentService {
       })
       .populate("productId", "name images")
       .populate("orderId")
-      .populate({
-        path: "staffId",
-        populate: {
-          path: "accountId",
-          select: "fullName email",
-        },
-      })
+      // .populate({
+      //   path: "staffId",
+      //   populate: {
+      //     path: "accountId",
+      //     select: "fullName email",
+      //   },
+      // })
+      .populate("staffId", "fullName email role")
       .sort({
         appointmentDate: 1,
       });

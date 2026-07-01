@@ -12,6 +12,7 @@ export enum NotificationType {
 
   NEW_CUSTOMER = "NEW_CUSTOMER",
   APPOINTMENT = "APPOINTMENT",
+  PAYMENT = "PAYMENT",
 }
 
 export interface INotification {

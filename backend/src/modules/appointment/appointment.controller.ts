@@ -5,25 +5,20 @@ import { Customer } from "../customer/customer.model";
 
 export class AppointmentController {
   // Customer books an appointment
- static async createAppointment(
-  req: any,
-  res: Response
-) {
-  try {
-
-    const customer = await Customer.findOne({
-      accountId: req.user.id,
-    });
-
-    if (!customer) {
-      return res.status(404).json({
-        success: false,
-        message: "Customer not found",
+  static async createAppointment(req: any, res: Response) {
+    try {
+      const customer = await Customer.findOne({
+        accountId: req.user.id,
       });
-    }
 
-    const appointment =
-      await AppointmentService.createAppointment({
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message: "Customer not found",
+        });
+      }
+
+      const appointment = await AppointmentService.createAppointment({
         customerId: customer._id,
 
         productId: req.body.productId,
@@ -37,26 +32,30 @@ export class AppointmentController {
         notes: req.body.notes,
       });
 
-    return res.status(201).json({
-      success: true,
-      data: appointment,
-    });
-
-  } catch (error: any) {
-
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-
+      return res.status(201).json({
+        success: true,
+        data: appointment,
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
   }
-}
 
   // Customer views own appointments
   static async getMyAppointments(req: any, res: Response) {
     try {
+      // const appointments = await AppointmentService.getMyAppointments(
+      // req.user.customerId,
+      // );
+      const customer = await Customer.findOne({
+        accountId: req.user.id,
+      });
+
       const appointments = await AppointmentService.getMyAppointments(
-        req.user.customerId,
+        customer!._id.toString(),
       );
 
       return res.status(200).json({

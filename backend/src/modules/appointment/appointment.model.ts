@@ -14,11 +14,14 @@ const appointmentSchema = new Schema<IAppointment>(
       required: true,
     },
 
+    // staffId: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Staff",
+    // },
     staffId: {
       type: Schema.Types.ObjectId,
-      ref: "Staff",
+      ref: "Account",
     },
-
     orderId: {
       type: Schema.Types.ObjectId,
       ref: "Order",
