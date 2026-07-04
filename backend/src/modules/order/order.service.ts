@@ -166,6 +166,21 @@ if (customer) {
       cancelledOrders,
     };
   }
+  static async getAllOrders() {
+  return await Order.find()
+    .populate({
+      path: "customerId",
+      populate: {
+        path: "accountId",
+        select: "fullName email",
+      },
+    })
+    .populate("productId", "name")
+    .populate("measurementId")
+    .sort({
+      createdAt: -1,
+    });
+}
 }
 
 // static async getAdminStats() {

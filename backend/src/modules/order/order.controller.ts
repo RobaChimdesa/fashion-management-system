@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request,Response } from "express";
 
 import { OrderService } from "./order.service";
 import { AuthRequest } from "../../types/auth-request";
@@ -118,6 +118,7 @@ export class OrderController {
         message: error.message,
       });
     }
+    
   }
 
 //   static async getMyStats(
@@ -193,4 +194,24 @@ export class OrderController {
 //     });
 //   }
 // }
+
+static async getAllOrders(
+  req: Request,
+  res: Response
+) {
+  try {
+    const orders =
+      await OrderService.getAllOrders();
+
+    return res.status(200).json({
+      success: true,
+      data: orders,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 }

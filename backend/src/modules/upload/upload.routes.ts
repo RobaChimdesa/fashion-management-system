@@ -36,6 +36,47 @@ import { authenticate } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /uploads/image:
+ *   post:
+ *     summary: Upload an image
+ *     description: Upload a single image to Cloudinary. Returns the uploaded image URL.
+ *     tags:
+ *       - Uploads
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - image
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: string
+ *                   example: https://res.cloudinary.com/demo/image/upload/v123456789/sample.jpg
+ *       400:
+ *         description: No image uploaded
+ *       401:
+ *         description: Unauthorized
+ */
 router.post(
   "/image",
 
