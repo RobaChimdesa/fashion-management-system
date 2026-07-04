@@ -3,7 +3,8 @@ import { connectDB } from "./config/db";
 import { env } from "./config/env";
 import { Account } from "./modules/auth/account.model";
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./config/swagger";
+import swaggerSpec  from "./config/swagger";
+
 const startServer = async () => {
   try {
     await connectDB();
