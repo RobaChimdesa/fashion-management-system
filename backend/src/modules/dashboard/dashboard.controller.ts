@@ -68,24 +68,19 @@ export class DashboardController {
     }
   }
 
-  static async getAdminOverview(
-  req: AuthRequest,
-  res: Response
-) {
-  try {
-    const data =
-      await DashboardService.getAdminOverview();
+  static async getAdminOverview(req: AuthRequest, res: Response) {
+    try {
+      const data = await DashboardService.getAdminOverview();
 
-    res.status(200).json({
-      success: true,
-      data,
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message:
-        error.message,
-    });
+      res.status(200).json({
+        success: true,
+        data,
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
   }
-}
 }

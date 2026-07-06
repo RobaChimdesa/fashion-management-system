@@ -4,15 +4,9 @@ import { CustomerService } from "./customer.service";
 import { AuthRequest } from "../../types/auth-request";
 
 export class CustomerController {
-  static async getMyProfile(
-    req: AuthRequest,
-    res: Response
-  ) {
+  static async getMyProfile(req: AuthRequest, res: Response) {
     try {
-      const profile =
-        await CustomerService.getMyProfile(
-          req.user!.id
-        );
+      const profile = await CustomerService.getMyProfile(req.user!.id);
 
       res.status(200).json({
         success: true,
@@ -26,16 +20,12 @@ export class CustomerController {
     }
   }
 
-  static async updateMyProfile(
-    req: AuthRequest,
-    res: Response
-  ) {
+  static async updateMyProfile(req: AuthRequest, res: Response) {
     try {
-      const profile =
-        await CustomerService.updateMyProfile(
-          req.user!.id,
-          req.body
-        );
+      const profile = await CustomerService.updateMyProfile(
+        req.user!.id,
+        req.body,
+      );
 
       res.status(200).json({
         success: true,

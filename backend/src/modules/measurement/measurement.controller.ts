@@ -4,21 +4,16 @@ import { MeasurementService } from "./measurement.service";
 import { AuthRequest } from "../../types/auth-request";
 
 export class MeasurementController {
-  static async addMeasurement(
-    req: AuthRequest,
-    res: Response
-  ) {
+  static async addMeasurement(req: AuthRequest, res: Response) {
     try {
-      const measurement =
-        await MeasurementService.addMeasurement(
-          req.user!.id,
-          req.body
-        );
+      const measurement = await MeasurementService.addMeasurement(
+        req.user!.id,
+        req.body,
+      );
 
       res.status(201).json({
         success: true,
-        message:
-          "Measurement added successfully",
+        message: "Measurement added successfully",
         data: measurement,
       });
     } catch (error: any) {
@@ -29,15 +24,11 @@ export class MeasurementController {
     }
   }
 
-  static async getCurrentMeasurement(
-    req: AuthRequest,
-    res: Response
-  ) {
+  static async getCurrentMeasurement(req: AuthRequest, res: Response) {
     try {
-      const measurement =
-        await MeasurementService.getCurrentMeasurement(
-          req.user!.id
-        );
+      const measurement = await MeasurementService.getCurrentMeasurement(
+        req.user!.id,
+      );
 
       res.status(200).json({
         success: true,
@@ -51,15 +42,11 @@ export class MeasurementController {
     }
   }
 
-  static async getHistory(
-    req: AuthRequest,
-    res: Response
-  ) {
+  static async getHistory(req: AuthRequest, res: Response) {
     try {
-      const measurements =
-        await MeasurementService.getMeasurementHistory(
-          req.user!.id
-        );
+      const measurements = await MeasurementService.getMeasurementHistory(
+        req.user!.id,
+      );
 
       res.status(200).json({
         success: true,
@@ -73,22 +60,17 @@ export class MeasurementController {
     }
   }
 
-  static async updateMeasurement(
-    req: AuthRequest,
-    res: Response
-  ) {
+  static async updateMeasurement(req: AuthRequest, res: Response) {
     try {
-      const measurement =
-        await MeasurementService.updateMeasurement(
-          req.params.id as string,
-          req.user!.id,
-          req.body
-        );
+      const measurement = await MeasurementService.updateMeasurement(
+        req.params.id as string,
+        req.user!.id,
+        req.body,
+      );
 
       res.status(200).json({
         success: true,
-        message:
-          "Measurement updated successfully",
+        message: "Measurement updated successfully",
         data: measurement,
       });
     } catch (error: any) {
@@ -99,26 +81,22 @@ export class MeasurementController {
     }
   }
 
-  static async deleteMeasurement(
-  req: AuthRequest,
-  res: Response
-) {
-  try {
-    const result =
-      await MeasurementService.deleteMeasurement(
+  static async deleteMeasurement(req: AuthRequest, res: Response) {
+    try {
+      const result = await MeasurementService.deleteMeasurement(
         req.params.id as string,
-        req.user!.id
+        req.user!.id,
       );
 
-    res.status(200).json({
-      success: true,
-      message: result.message,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
+      res.status(200).json({
+        success: true,
+        message: result.message,
+      });
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
   }
-}
 }

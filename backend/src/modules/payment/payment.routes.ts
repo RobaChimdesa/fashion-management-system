@@ -16,7 +16,6 @@ const router = Router();
 
 // Submit payment
 
-
 /**
  * @swagger
  * /payments:

@@ -114,27 +114,23 @@ export class OrderService {
     order.status = status as any;
 
     await order.save();
-    const customer =
-  await Customer.findById(
-    order.customerId
-  );
+    const customer = await Customer.findById(order.customerId);
 
-if (customer) {
-  const customerAccountId =
-    customer.accountId.toString();
+    if (customer) {
+      const customerAccountId = customer.accountId.toString();
 
-  await NotificationService.createNotification(
-    customerAccountId,
+      await NotificationService.createNotification(
+        customerAccountId,
 
-    "Order Updated",
+        "Order Updated",
 
-    `Your order status has been changed to ${order.status}`,
+        `Your order status has been changed to ${order.status}`,
 
-    NotificationType.ORDER_CONFIRMED,
+        NotificationType.ORDER_CONFIRMED,
 
-    order._id.toString()
-  );
-}
+        order._id.toString(),
+      );
+    }
 
     return order;
   }
@@ -167,20 +163,20 @@ if (customer) {
     };
   }
   static async getAllOrders() {
-  return await Order.find()
-    .populate({
-      path: "customerId",
-      populate: {
-        path: "accountId",
-        select: "fullName email",
-      },
-    })
-    .populate("productId", "name")
-    .populate("measurementId")
-    .sort({
-      createdAt: -1,
-    });
-}
+    return await Order.find()
+      .populate({
+        path: "customerId",
+        populate: {
+          path: "accountId",
+          select: "fullName email",
+        },
+      })
+      .populate("productId", "name")
+      .populate("measurementId")
+      .sort({
+        createdAt: -1,
+      });
+  }
 }
 
 // static async getAdminStats() {

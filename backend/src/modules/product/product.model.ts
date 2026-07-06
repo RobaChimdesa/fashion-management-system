@@ -58,7 +58,6 @@ const productSchema = new Schema<IProduct>(
       type: Number,
       default: 0,
     },
-
   },
   {
     timestamps: true,

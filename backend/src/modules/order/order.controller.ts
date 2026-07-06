@@ -1,4 +1,4 @@
-import { Request,Response } from "express";
+import { Request, Response } from "express";
 
 import { OrderService } from "./order.service";
 import { AuthRequest } from "../../types/auth-request";
@@ -118,100 +118,95 @@ export class OrderController {
         message: error.message,
       });
     }
-    
   }
 
-//   static async getMyStats(
-//   req: AuthRequest,
-//   res: Response
-// ) {
-//   try {
-//     const customer =
-//       await Customer.findOne({
-//         accountId: req.user!.id,
-//       });
+  //   static async getMyStats(
+  //   req: AuthRequest,
+  //   res: Response
+  // ) {
+  //   try {
+  //     const customer =
+  //       await Customer.findOne({
+  //         accountId: req.user!.id,
+  //       });
 
-//     if (!customer) {
-//       return res.status(404).json({
-//         success: false,
-//         message:
-//           "Customer profile not found",
-//       });
-//     }
+  //     if (!customer) {
+  //       return res.status(404).json({
+  //         success: false,
+  //         message:
+  //           "Customer profile not found",
+  //       });
+  //     }
 
-//     const stats =
-//       await OrderService.getCustomerStats(
-//         customer._id.toString()
-//       );
+  //     const stats =
+  //       await OrderService.getCustomerStats(
+  //         customer._id.toString()
+  //       );
 
-//     res.status(200).json({
-//       success: true,
-//       data: stats,
-//     });
-//   } catch (error: any) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// }
+  //     res.status(200).json({
+  //       success: true,
+  //       data: stats,
+  //     });
+  //   } catch (error: any) {
+  //     res.status(500).json({
+  //       success: false,
+  //       message: error.message,
+  //     });
+  //   }
+  // }
 
-// static async getAdminStats(
-//   req: AuthRequest,
-//   res: Response
-// ) {
-//   try {
-//     const stats =
-//       await OrderService.getAdminStats();
+  // static async getAdminStats(
+  //   req: AuthRequest,
+  //   res: Response
+  // ) {
+  //   try {
+  //     const stats =
+  //       await OrderService.getAdminStats();
 
-//     res.status(200).json({
-//       success: true,
-//       data: stats,
-//     });
-//   } catch (error: any) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// }
-// static async getStaffStats(
-//   req: AuthRequest,
-//   res: Response
-// ) {
-//   try {
-//     const stats =
-//       await OrderService.getStaffStats();
+  //     res.status(200).json({
+  //       success: true,
+  //       data: stats,
+  //     });
+  //   } catch (error: any) {
+  //     res.status(500).json({
+  //       success: false,
+  //       message: error.message,
+  //     });
+  //   }
+  // }
+  // static async getStaffStats(
+  //   req: AuthRequest,
+  //   res: Response
+  // ) {
+  //   try {
+  //     const stats =
+  //       await OrderService.getStaffStats();
 
-//     res.status(200).json({
-//       success: true,
-//       data: stats,
-//     });
-//   } catch (error: any) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// }
+  //     res.status(200).json({
+  //       success: true,
+  //       data: stats,
+  //     });
+  //   } catch (error: any) {
+  //     res.status(500).json({
+  //       success: false,
+  //       message: error.message,
+  //     });
+  //   }
+  // }
 
-static async getAllOrders(
-  req: Request,
-  res: Response
-) {
-  try {
-    const orders =
-      await OrderService.getAllOrders();
+  static async getAllOrders(req: Request, res: Response) {
+    try {
+      const orders = await OrderService.getAllOrders();
 
-    return res.status(200).json({
-      success: true,
-      data: orders,
-    });
-  } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+      return res.status(200).json({
+        success: true,
+        data: orders,
+      });
+    } catch (error: any) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
   }
-}
 }

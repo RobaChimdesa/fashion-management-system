@@ -4,29 +4,6 @@ import { ReviewService } from "./review.service";
 import { Customer } from "../customer/customer.model";
 
 export class ReviewController {
-  // static async createReview(req: any, res: Response) {
-  //   try {
-  //     const review = await ReviewService.createReview({
-  //       customerId: req.user.customerId,
-
-  //       productId: req.body.productId,
-
-  //       rating: req.body.rating,
-
-  //       comment: req.body.comment,
-  //     });
-
-  //     return res.status(201).json({
-  //       success: true,
-  //       data: review,
-  //     });
-  //   } catch (error: any) {
-  //     return res.status(400).json({
-  //       success: false,
-  //       message: error.message,
-  //     });
-  //   }
-  // }
   static async createReview(req: any, res: Response) {
     try {
       const customer = await Customer.findOne({

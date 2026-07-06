@@ -27,7 +27,6 @@ const customerSchema = new Schema<CustomerDocument>(
       type: Date,
     },
 
-
     address: {
       country: {
         type: String,

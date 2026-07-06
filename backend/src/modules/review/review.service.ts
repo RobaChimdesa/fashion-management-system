@@ -37,10 +37,6 @@ export class ReviewService {
       throw new Error("Review not found");
     }
 
-    // review.rating = payload.rating ?? review.rating;
-    // review.comment = payload.comment ?? review.comment;
-    // await review.save();
-    // return review;
     review.rating = payload.rating ?? review.rating;
     review.comment = payload.comment ?? review.comment;
 
@@ -51,18 +47,6 @@ export class ReviewService {
     return review;
   }
 
-  // static async deleteReview(reviewId: string, customerId: string) {
-  //   const review = await Review.findOneAndDelete({
-  //     _id: reviewId,
-  //     customerId,
-  //   });
-
-  //   if (!review) {
-  //     throw new Error("Review not found");
-  //   }
-
-  //   return true;
-  // }
   static async deleteReview(reviewId: string, customerId: string) {
     const review = await Review.findOneAndDelete({
       _id: reviewId,
@@ -87,39 +71,34 @@ export class ReviewService {
         createdAt: -1,
       });
   }
-   static async updateProductRating(productId: string) {
-  const result = await Review.aggregate([
-    {
-      $match: {
-        productId: new Types.ObjectId(productId),
-      },
-    },
-    {
-      $group: {
-        _id: "$productId",
-        averageRating: {
-          $avg: "$rating",
-        },
-        totalReviews: {
-          $sum: 1,
+  static async updateProductRating(productId: string) {
+    const result = await Review.aggregate([
+      {
+        $match: {
+          productId: new Types.ObjectId(productId),
         },
       },
-    },
-  ]);
+      {
+        $group: {
+          _id: "$productId",
+          averageRating: {
+            $avg: "$rating",
+          },
+          totalReviews: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
 
-  const stats = result[0] || {
-    averageRating: 0,
-    totalReviews: 0,
-  };
+    const stats = result[0] || {
+      averageRating: 0,
+      totalReviews: 0,
+    };
 
-  await Product.findByIdAndUpdate(productId, {
-    averageRating: Number(
-      Number(stats.averageRating).toFixed(1)
-    ),
-    totalReviews: stats.totalReviews,
-  });
+    await Product.findByIdAndUpdate(productId, {
+      averageRating: Number(Number(stats.averageRating).toFixed(1)),
+      totalReviews: stats.totalReviews,
+    });
+  }
 }
-  
-}
-
-

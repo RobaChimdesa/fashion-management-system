@@ -20,7 +20,6 @@ export interface SafeUserResponse {
   role: Role;
 }
 
-
 export interface LoginResponse {
   token: string;
   user: SafeUserResponse;

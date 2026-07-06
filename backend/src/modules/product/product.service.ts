@@ -20,12 +20,18 @@ export class ProductService {
     limit?: string;
     sort?: "price_asc" | "price_desc" | "newest";
   }) {
-    const { search, category, culturalStyle,  page = "1", limit = "10", sort } = query;
+    const {
+      search,
+      category,
+      culturalStyle,
+      page = "1",
+      limit = "10",
+      sort,
+    } = query;
 
     const filter: Record<string, any> = {
       isAvailable: true,
     };
-
 
     // Search by product name
     if (search) {
@@ -44,7 +50,7 @@ export class ProductService {
     if (culturalStyle) {
       filter.culturalStyle = culturalStyle;
     }
-     let productQuery = Product.find(filter);
+    let productQuery = Product.find(filter);
 
     if (query.sort === "price_asc") {
       productQuery = productQuery.sort({
@@ -142,11 +148,11 @@ export class ProductService {
   }
 
   static async getTopRatedProducts() {
-  return await Product.find()
-    .sort({
-      averageRating: -1,
-      totalReviews: -1,
-    })
-    .limit(10);
-}
+    return await Product.find()
+      .sort({
+        averageRating: -1,
+        totalReviews: -1,
+      })
+      .limit(10);
+  }
 }

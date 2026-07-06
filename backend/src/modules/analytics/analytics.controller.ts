@@ -98,45 +98,36 @@ export class AnalyticsController {
     }
   }
 
-  static async getProductPerformance(
-  req: Request,
-  res: Response
-) {
-  try {
-    const report =
-      await AnalyticsService.getProductPerformance(
-        req.params.productId as string
+  static async getProductPerformance(req: Request, res: Response) {
+    try {
+      const report = await AnalyticsService.getProductPerformance(
+        req.params.productId as string,
       );
 
-    return res.status(200).json({
-      success: true,
-      data: report,
-    });
-  } catch (error: any) {
-    return res.status(404).json({
-      success: false,
-      message: error.message,
-    });
+      return res.status(200).json({
+        success: true,
+        data: report,
+      });
+    } catch (error: any) {
+      return res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    }
   }
-}
-static async getDashboardCharts(
-  req: Request,
-  res: Response
-) {
-  try {
-    const charts =
-      await AnalyticsService.getDashboardCharts();
+  static async getDashboardCharts(req: Request, res: Response) {
+    try {
+      const charts = await AnalyticsService.getDashboardCharts();
 
-    return res.status(200).json({
-      success: true,
-      data: charts,
-    });
-  } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+      return res.status(200).json({
+        success: true,
+        data: charts,
+      });
+    } catch (error: any) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
   }
-}
-  
 }

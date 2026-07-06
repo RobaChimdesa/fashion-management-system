@@ -5,8 +5,7 @@ import { authorize } from "../../middlewares/authorize.middleware";
 
 import { Role } from "../auth/auth.constants";
 
-import { MeasurementController }
-  from "./measurement.controller";
+import { MeasurementController } from "./measurement.controller";
 
 const router = Router();
 
@@ -61,7 +60,7 @@ router.post(
   "/",
   authenticate,
   authorize(Role.CUSTOMER),
-  MeasurementController.addMeasurement
+  MeasurementController.addMeasurement,
 );
 
 /**
@@ -81,7 +80,7 @@ router.get(
   "/current",
   authenticate,
   authorize(Role.CUSTOMER),
-  MeasurementController.getCurrentMeasurement
+  MeasurementController.getCurrentMeasurement,
 );
 
 /**
@@ -101,7 +100,7 @@ router.get(
   "/history",
   authenticate,
   authorize(Role.CUSTOMER),
-  MeasurementController.getHistory
+  MeasurementController.getHistory,
 );
 
 /**
@@ -154,7 +153,7 @@ router.patch(
   "/:id",
   authenticate,
   authorize(Role.CUSTOMER),
-  MeasurementController.updateMeasurement
+  MeasurementController.updateMeasurement,
 );
 
 /**
@@ -184,7 +183,7 @@ router.delete(
   "/:id",
   authenticate,
   authorize(Role.CUSTOMER),
-  MeasurementController.deleteMeasurement
+  MeasurementController.deleteMeasurement,
 );
 
 export default router;

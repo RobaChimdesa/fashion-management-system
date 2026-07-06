@@ -3,11 +3,7 @@ import { Customer } from "../customer/customer.model";
 import { Product } from "../product/product.model";
 import { Order } from "../order/order.model";
 
-
-import {
-  OrderStatus,
-  OrderType,
-} from "../order/order.types";
+import { OrderStatus, OrderType } from "../order/order.types";
 
 import { Role } from "../auth/auth.constants";
 
@@ -72,140 +68,104 @@ export class DashboardService {
       }),
     ]);
 
-    const revenueResult =
-      await Order.aggregate([
-        {
-          $match: {
-            status:
-              OrderStatus.DELIVERED,
+    const revenueResult = await Order.aggregate([
+      {
+        $match: {
+          status: OrderStatus.DELIVERED,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: {
+            $sum: "$totalPrice",
           },
         },
-        {
-          $group: {
-            _id: null,
-            totalRevenue: {
-              $sum: "$totalPrice",
-            },
-          },
-        },
-      ]);
+      },
+    ]);
 
-    const totalRevenue =
-      revenueResult[0]
-        ?.totalRevenue || 0;
+    const totalRevenue = revenueResult[0]?.totalRevenue || 0;
 
     const averageOrderValue =
-      deliveredOrders > 0
-        ? totalRevenue /
-          deliveredOrders
-        : 0;
+      deliveredOrders > 0 ? totalRevenue / deliveredOrders : 0;
 
     const now = new Date();
 
-    const startOfToday =
-      new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate()
-      );
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
 
-    const startOfMonth =
-      new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        1
-      );
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const startOfYear =
-      new Date(
-        now.getFullYear(),
-        0,
-        1
-      );
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-    const [
-      todayRevenueResult,
-      monthRevenueResult,
-      yearRevenueResult,
-    ] = await Promise.all([
-      Order.aggregate([
-        {
-          $match: {
-            status:
-              OrderStatus.DELIVERED,
-            createdAt: {
-              $gte:
-                startOfToday,
+    const [todayRevenueResult, monthRevenueResult, yearRevenueResult] =
+      await Promise.all([
+        Order.aggregate([
+          {
+            $match: {
+              status: OrderStatus.DELIVERED,
+              createdAt: {
+                $gte: startOfToday,
+              },
             },
           },
-        },
-        {
-          $group: {
-            _id: null,
-            total: {
-              $sum:
-                "$totalPrice",
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$totalPrice",
+              },
             },
           },
-        },
-      ]),
+        ]),
 
-      Order.aggregate([
-        {
-          $match: {
-            status:
-              OrderStatus.DELIVERED,
-            createdAt: {
-              $gte:
-                startOfMonth,
+        Order.aggregate([
+          {
+            $match: {
+              status: OrderStatus.DELIVERED,
+              createdAt: {
+                $gte: startOfMonth,
+              },
             },
           },
-        },
-        {
-          $group: {
-            _id: null,
-            total: {
-              $sum:
-                "$totalPrice",
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$totalPrice",
+              },
             },
           },
-        },
-      ]),
+        ]),
 
-      Order.aggregate([
-        {
-          $match: {
-            status:
-              OrderStatus.DELIVERED,
-            createdAt: {
-              $gte:
-                startOfYear,
+        Order.aggregate([
+          {
+            $match: {
+              status: OrderStatus.DELIVERED,
+              createdAt: {
+                $gte: startOfYear,
+              },
             },
           },
-        },
-        {
-          $group: {
-            _id: null,
-            total: {
-              $sum:
-                "$totalPrice",
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$totalPrice",
+              },
             },
           },
-        },
-      ]),
-    ]);
+        ]),
+      ]);
 
-    const todayRevenue =
-      todayRevenueResult[0]
-        ?.total || 0;
+    const todayRevenue = todayRevenueResult[0]?.total || 0;
 
-    const thisMonthRevenue =
-      monthRevenueResult[0]
-        ?.total || 0;
+    const thisMonthRevenue = monthRevenueResult[0]?.total || 0;
 
-    const thisYearRevenue =
-      yearRevenueResult[0]
-        ?.total || 0;
+    const thisYearRevenue = yearRevenueResult[0]?.total || 0;
 
     return {
       totalCustomers,
@@ -271,19 +231,11 @@ export class DashboardService {
       }),
     ]);
 
-    const todayOrders =
-      await Order.countDocuments({
-        createdAt: {
-          $gte: new Date(
-            new Date().setHours(
-              0,
-              0,
-              0,
-              0
-            )
-          ),
-        },
-      });
+    const todayOrders = await Order.countDocuments({
+      createdAt: {
+        $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+      },
+    });
 
     return {
       pendingOrders,
@@ -298,9 +250,7 @@ export class DashboardService {
     };
   }
 
-  static async getCustomerStats(
-    customerId: string
-  ) {
+  static async getCustomerStats(customerId: string) {
     const [
       totalOrders,
       pendingOrders,
@@ -316,54 +266,46 @@ export class DashboardService {
 
       Order.countDocuments({
         customerId,
-        status:
-          OrderStatus.PENDING,
+        status: OrderStatus.PENDING,
       }),
 
       Order.countDocuments({
         customerId,
-        status:
-          OrderStatus.IN_PROGRESS,
+        status: OrderStatus.IN_PROGRESS,
       }),
 
       Order.countDocuments({
         customerId,
-        status:
-          OrderStatus.DELIVERED,
+        status: OrderStatus.DELIVERED,
       }),
 
       Order.countDocuments({
         customerId,
-        orderType:
-          OrderType.CUSTOM,
+        orderType: OrderType.CUSTOM,
       }),
 
       Order.countDocuments({
         customerId,
-        orderType:
-          OrderType.PRODUCT,
+        orderType: OrderType.PRODUCT,
       }),
     ]);
 
-    const spending =
-      await Order.aggregate([
-        {
-          $match: {
-            customerId,
-            status:
-              OrderStatus.DELIVERED,
+    const spending = await Order.aggregate([
+      {
+        $match: {
+          customerId,
+          status: OrderStatus.DELIVERED,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSpent: {
+            $sum: "$totalPrice",
           },
         },
-        {
-          $group: {
-            _id: null,
-            totalSpent: {
-              $sum:
-                "$totalPrice",
-            },
-          },
-        },
-      ]);
+      },
+    ]);
 
     return {
       totalOrders,
@@ -374,77 +316,59 @@ export class DashboardService {
       customOrders,
       productOrders,
 
-      totalSpent:
-        spending[0]
-          ?.totalSpent || 0,
+      totalSpent: spending[0]?.totalSpent || 0,
     };
   }
 
   static async getRecentOrders(limit = 10) {
-  const orders = await Order.find()
-    .populate({
-      path: "customerId",
-      populate: {
-        path: "accountId",
-        select: "fullName email",
-      },
-    })
-    .sort({
-      createdAt: -1,
-    })
-    .limit(limit);
-
-  return orders.map((order: any) => ({
-    id: order._id,
-    customerName:
-      order.customerId?.accountId?.fullName ||
-      "Unknown",
-
-    orderType: order.orderType,
-
-    status: order.status,
-
-    totalPrice: order.totalPrice,
-
-    createdAt: order.createdAt,
-  }));
-}
-
-static async getRecentCustomers(
-  limit = 10
-) {
-  const customers =
-    await Customer.find()
-      .populate(
-        "accountId",
-        "fullName email"
-      )
+    const orders = await Order.find()
+      .populate({
+        path: "customerId",
+        populate: {
+          path: "accountId",
+          select: "fullName email",
+        },
+      })
       .sort({
         createdAt: -1,
       })
       .limit(limit);
 
-  return customers.map(
-    (customer: any) => ({
+    return orders.map((order: any) => ({
+      id: order._id,
+      customerName: order.customerId?.accountId?.fullName || "Unknown",
+
+      orderType: order.orderType,
+
+      status: order.status,
+
+      totalPrice: order.totalPrice,
+
+      createdAt: order.createdAt,
+    }));
+  }
+
+  static async getRecentCustomers(limit = 10) {
+    const customers = await Customer.find()
+      .populate("accountId", "fullName email")
+      .sort({
+        createdAt: -1,
+      })
+      .limit(limit);
+
+    return customers.map((customer: any) => ({
       id: customer._id,
 
-      fullName:
-        customer.accountId
-          ?.fullName,
+      fullName: customer.accountId?.fullName,
 
-      email:
-        customer.accountId
-          ?.email,
+      email: customer.accountId?.email,
 
-      createdAt:
-        customer.createdAt,
-    })
-  );
-}
+      createdAt: customer.createdAt,
+    }));
+  }
 
-static async getTopCategories() {
-  const result =
-    await Order.aggregate([
+  static async getTopCategories() {
+    const result = await Order.aggregate([
       {
         $match: {
           productId: {
@@ -456,23 +380,19 @@ static async getTopCategories() {
       {
         $lookup: {
           from: "products",
-          localField:
-            "productId",
-          foreignField:
-            "_id",
+          localField: "productId",
+          foreignField: "_id",
           as: "product",
         },
       },
 
       {
-        $unwind:
-          "$product",
+        $unwind: "$product",
       },
 
       {
         $group: {
-          _id:
-            "$product.category",
+          _id: "$product.category",
 
           orders: {
             $sum: 1,
@@ -491,22 +411,17 @@ static async getTopCategories() {
       },
     ]);
 
-  return result.map(
-    (item) => ({
+    return result.map((item) => ({
       category: item._id,
-      orders:
-        item.orders,
-    })
-  );
-}
+      orders: item.orders,
+    }));
+  }
 
-static async getMonthlyRevenue() {
-  const result =
-    await Order.aggregate([
+  static async getMonthlyRevenue() {
+    const result = await Order.aggregate([
       {
         $match: {
-          status:
-            OrderStatus.DELIVERED,
+          status: OrderStatus.DELIVERED,
         },
       },
 
@@ -514,19 +429,16 @@ static async getMonthlyRevenue() {
         $group: {
           _id: {
             year: {
-              $year:
-                "$createdAt",
+              $year: "$createdAt",
             },
 
             month: {
-              $month:
-                "$createdAt",
+              $month: "$createdAt",
             },
           },
 
           revenue: {
-            $sum:
-              "$totalPrice",
+            $sum: "$totalPrice",
           },
         },
       },
@@ -539,61 +451,53 @@ static async getMonthlyRevenue() {
       },
     ]);
 
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
-  return result.map(
-    (item) => ({
-      month:
-        months[
-          item._id.month -
-            1
-        ],
+    return result.map((item) => ({
+      month: months[item._id.month - 1],
 
-      revenue:
-        item.revenue,
-    })
-  );
-}
+      revenue: item.revenue,
+    }));
+  }
 
-static async getAdminOverview() {
-  const [
-    stats,
-    recentOrders,
-    recentCustomers,
-    topCategories,
-    monthlyRevenue,
-  ] = await Promise.all([
-    this.getAdminStats(),
+  static async getAdminOverview() {
+    const [
+      stats,
+      recentOrders,
+      recentCustomers,
+      topCategories,
+      monthlyRevenue,
+    ] = await Promise.all([
+      this.getAdminStats(),
 
-    this.getRecentOrders(),
+      this.getRecentOrders(),
 
-    this.getRecentCustomers(),
+      this.getRecentCustomers(),
 
-    this.getTopCategories(),
+      this.getTopCategories(),
 
-    this.getMonthlyRevenue(),
-  ]);
+      this.getMonthlyRevenue(),
+    ]);
 
-  return {
-    stats,
-    recentOrders,
-    recentCustomers,
-    topCategories,
-    monthlyRevenue,
-  };
-}
-
+    return {
+      stats,
+      recentOrders,
+      recentCustomers,
+      topCategories,
+      monthlyRevenue,
+    };
+  }
 }

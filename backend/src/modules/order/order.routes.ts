@@ -116,7 +116,6 @@ router.patch(
   OrderController.cancelOrder,
 );
 
-
 /**
  * @swagger
  * /orders/{id}:
@@ -181,7 +180,5 @@ router.patch(
   authorize(Role.ADMIN, Role.STAFF),
   OrderController.updateOrderStatus,
 );
-
-
 
 export default router;

@@ -1,4 +1,4 @@
-import {Request,  Response } from "express";
+import { Request, Response } from "express";
 import { ProductService } from "./product.service";
 import { AuthRequest } from "../../types/auth-request";
 import { UploadService } from "../upload/upload.service";
@@ -23,27 +23,21 @@ export class ProductController {
     }
   }
 
-  static async getAllProducts(
-  req: AuthRequest,
-  res: Response
-) {
-  try {
-    const products =
-      await ProductService.getAllProducts(
-        req.query as any
-      );
+  static async getAllProducts(req: AuthRequest, res: Response) {
+    try {
+      const products = await ProductService.getAllProducts(req.query as any);
 
-    res.status(200).json({
-      success: true,
-      ...products,
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+      res.status(200).json({
+        success: true,
+        ...products,
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
   }
-}
 
   static async getProductById(req: AuthRequest, res: Response) {
     try {
@@ -101,10 +95,7 @@ export class ProductController {
     }
   }
 
-   static async uploadImage(
-    req: Request,
-    res: Response
-  ) {
+  static async uploadImage(req: Request, res: Response) {
     try {
       if (!req.file) {
         return res.status(400).json({
@@ -113,10 +104,7 @@ export class ProductController {
         });
       }
 
-      const result =
-        await UploadService.uploadImage(
-          req.file.path
-        );
+      const result = await UploadService.uploadImage(req.file.path);
 
       return res.status(200).json({
         success: true,
@@ -130,19 +118,12 @@ export class ProductController {
     }
   }
 
-  static async getTopRatedProducts(
-  req: Request,
-  res: Response
-) {
-  const products =
-    await ProductService.getTopRatedProducts();
+  static async getTopRatedProducts(req: Request, res: Response) {
+    const products = await ProductService.getTopRatedProducts();
 
-  return res.status(200).json({
-    success: true,
-    data: products,
-  });
-}
-
-
-
+    return res.status(200).json({
+      success: true,
+      data: products,
+    });
+  }
 }

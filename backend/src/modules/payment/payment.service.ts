@@ -2,9 +2,7 @@ import { Types } from "mongoose";
 
 import { Payment } from "./payment.model";
 
-import {
-  PaymentStatus,
-} from "./payment.types";
+import { PaymentStatus } from "./payment.types";
 
 import { Order } from "../order/order.model";
 
@@ -52,7 +50,7 @@ export class PaymentService {
         "A customer has submitted a payment for verification.",
         // "SYSTEM" as any,
         NotificationType.PAYMENT,
-        payment._id.toString()
+        payment._id.toString(),
       );
     }
 
@@ -88,10 +86,7 @@ export class PaymentService {
   }
 
   // Verify payment
-  static async verifyPayment(
-    paymentId: string,
-    adminId: string
-  ) {
+  static async verifyPayment(paymentId: string, adminId: string) {
     const payment = await Payment.findById(paymentId);
 
     if (!payment) {
@@ -100,24 +95,19 @@ export class PaymentService {
 
     payment.status = PaymentStatus.VERIFIED;
 
-    payment.verifiedBy =
-      new Types.ObjectId(adminId);
+    payment.verifiedBy = new Types.ObjectId(adminId);
 
     payment.verifiedAt = new Date();
 
     await payment.save();
 
     // Update order
-    await Order.findByIdAndUpdate(
-      payment.orderId,
-      {
-        paymentStatus: "PAID",
-      }
-    );
+    await Order.findByIdAndUpdate(payment.orderId, {
+      paymentStatus: "PAID",
+    });
 
     // Notify customer
-    const customer =
-      await Customer.findById(payment.customerId);
+    const customer = await Customer.findById(payment.customerId);
 
     if (customer) {
       await NotificationService.createNotification(
@@ -127,7 +117,7 @@ export class PaymentService {
         // "SYSTEM" as any,
         NotificationType.PAYMENT,
 
-        payment._id.toString()
+        payment._id.toString(),
       );
     }
 
@@ -135,10 +125,7 @@ export class PaymentService {
   }
 
   // Reject payment
-  static async rejectPayment(
-    paymentId: string,
-    adminId: string
-  ) {
+  static async rejectPayment(paymentId: string, adminId: string) {
     const payment = await Payment.findById(paymentId);
 
     if (!payment) {
@@ -147,15 +134,13 @@ export class PaymentService {
 
     payment.status = PaymentStatus.REJECTED;
 
-    payment.verifiedBy =
-      new Types.ObjectId(adminId);
+    payment.verifiedBy = new Types.ObjectId(adminId);
 
     payment.verifiedAt = new Date();
 
     await payment.save();
 
-    const customer =
-      await Customer.findById(payment.customerId);
+    const customer = await Customer.findById(payment.customerId);
 
     if (customer) {
       await NotificationService.createNotification(
@@ -164,7 +149,7 @@ export class PaymentService {
         "Your payment was rejected. Please upload a new receipt.",
         // "SYSTEM" as any,
         NotificationType.PAYMENT,
-        payment._id.toString()
+        payment._id.toString(),
       );
     }
 

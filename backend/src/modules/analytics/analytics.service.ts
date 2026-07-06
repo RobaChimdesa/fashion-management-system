@@ -375,30 +375,25 @@ export class AnalyticsService {
     };
   }
   static async getDashboardCharts() {
-  const [
-    revenue,
-    monthlySales,
-    orderStatus,
-    customerGrowth,
-    topProducts,
-  ] = await Promise.all([
-    this.getRevenueReport(),
-    this.getMonthlySalesReport(),
-    this.getOrderStatusStatistics(),
-    this.getCustomerGrowth(),
-    this.getTopSellingProducts(5),
-  ]);
+    const [revenue, monthlySales, orderStatus, customerGrowth, topProducts] =
+      await Promise.all([
+        this.getRevenueReport(),
+        this.getMonthlySalesReport(),
+        this.getOrderStatusStatistics(),
+        this.getCustomerGrowth(),
+        this.getTopSellingProducts(5),
+      ]);
 
-  return {
-    summary: revenue,
+    return {
+      summary: revenue,
 
-    monthlySales,
+      monthlySales,
 
-    orderStatus,
+      orderStatus,
 
-    customerGrowth,
+      customerGrowth,
 
-    topProducts,
-  };
-}
+      topProducts,
+    };
+  }
 }
