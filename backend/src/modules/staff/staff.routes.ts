@@ -147,8 +147,8 @@ router.patch(
 // Deactivate Staff
 /**
  * @swagger
- * /staff/{id}:
- *   delete:
+ * /staff/{id}/deactivate:
+ *   patch:
  *     summary: Deactivate a staff account
  *     tags: [Staff]
  *     security:
@@ -161,13 +161,40 @@ router.patch(
  *           type: string
  *     responses:
  *       200:
- *         description: Staff deactivated successfully.
+ *         description: Staff account deactivated successfully.
  */
-router.delete(
-  "/:id",
+router.patch(
+  "/:id/deactivate",
   authenticate,
   authorize(Role.ADMIN),
   StaffController.deactivateStaff
 );
+
+/**
+ * @swagger
+ * /staff/{id}/activate:
+ *   patch:
+ *     summary: Activate a staff account
+ *     tags: [Staff]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Staff account activated successfully.
+ */
+router.patch(
+  "/:id/activate",
+  authenticate,
+  authorize(Role.ADMIN),
+  StaffController.activateStaff
+);
+
+
 
 export default router;

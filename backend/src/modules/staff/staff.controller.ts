@@ -91,4 +91,30 @@ export class StaffController {
       });
     }
   }
+
+  static async activateStaff(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    if (typeof id !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid staff id",
+      });
+    }
+
+    const staff = await StaffService.activateStaff(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Staff account activated successfully",
+      data: staff,
+    });
+  } catch (error: any) {
+    return res.status(404).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 }

@@ -63,6 +63,11 @@ export class AuthService {
       throw new Error("Invalid email or password");
     }
 
+    if (!user.isActive) {
+    throw new Error(
+      "Your account has been deactivated. Please contact the administrator."
+    );
+  }
     const token = jwt.sign(
       {
         userId: user.id,

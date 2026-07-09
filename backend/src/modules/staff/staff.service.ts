@@ -96,4 +96,25 @@ export class StaffService {
 
     return staff;
   }
+
+  static async activateStaff(id: string) {
+  const staff = await Account.findOneAndUpdate(
+    {
+      _id: id,
+      role: Role.STAFF,
+    },
+    {
+      isActive: true,
+    },
+    {
+      new: true,
+    }
+  ).select("-password");
+
+  if (!staff) {
+    throw new Error("Staff not found");
+  }
+
+  return staff;
+}
 }
