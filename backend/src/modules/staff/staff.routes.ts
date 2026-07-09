@@ -10,7 +10,8 @@ const router = Router();
  * Admin Only
  */
 
-// Create Staff
+// Create Staff  
+
 /**
  * @swagger
  * /staff:
@@ -19,6 +20,29 @@ const router = Router();
  *     tags: [Staff]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - fullName
+ *               - email
+ *               - password
+ *             properties:
+ *               fullName:
+ *                 type: string
+ *                 example: Abebe Kebede
+ *               email:
+ *                 type: string
+ *                 example: abebe@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: Password123
+ *               phone:
+ *                 type: string
+ *                 example: "0912345678"
  *     responses:
  *       201:
  *         description: Staff account created successfully.
@@ -81,6 +105,7 @@ router.get(
 );
 
 // Update Staff
+
 /**
  * @swagger
  * /staff/{id}:
@@ -95,6 +120,19 @@ router.get(
  *         required: true
  *         schema:
  *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Staff updated successfully.
