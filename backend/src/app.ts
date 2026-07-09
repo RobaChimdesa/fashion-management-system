@@ -12,6 +12,7 @@ import reviewRoutes from "./modules/review/review.routes";
 import analyticsRoutes from "./modules/analytics/analytics.routes";
 import appointmentRoutes from "./modules/appointment/appointment.routes";
 import paymentRoutes from "./modules/payment/payment.routes";
+import staffRoutes from "./modules/staff/staff.routes";
 
 const app = express();
 app.use(
@@ -32,6 +33,7 @@ app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
 app.use("/api/v1/appointments", appointmentRoutes);
 app.use("/api/v1/payments", paymentRoutes);
+app.use("/api/v1/staff", staffRoutes);
 
 app.get("/", (_req, res) => {
   res.json({

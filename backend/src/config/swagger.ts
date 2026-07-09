@@ -22,7 +22,7 @@ const options: swaggerJsdoc.Options = {
       },
       {
         // url: "https://YOUR-RENDER-URL.onrender.com/api/v1",
-        url:"https://fashion-management-api.onrender.com/api/v1",
+        url: "https://fashion-management-api.onrender.com/api/v1",
         description: "Production Server",
       },
     ],
@@ -37,6 +37,35 @@ const options: swaggerJsdoc.Options = {
       },
 
       schemas: {
+        Staff: {
+          type: "object",
+          properties: {
+            _id: {
+              type: "string",
+              example: "686a313ba184aa575d5e1ab62e",
+            },
+            fullName: {
+              type: "string",
+              example: "Abebe Kebede",
+            },
+            email: {
+              type: "string",
+              example: "abebe@gmail.com",
+            },
+            phone: {
+              type: "string",
+              example: "0912345678",
+            },
+            role: {
+              type: "string",
+              example: "STAFF",
+            },
+            isActive: {
+              type: "boolean",
+              example: true,
+            },
+          },
+        },
         Product: {
           type: "object",
           properties: {
@@ -249,9 +278,7 @@ const options: swaggerJsdoc.Options = {
     ],
   },
 
-  apis: [
-    "./src/modules/**/*.routes.ts",
-  ],
+  apis: ["./src/modules/**/*.routes.ts"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
