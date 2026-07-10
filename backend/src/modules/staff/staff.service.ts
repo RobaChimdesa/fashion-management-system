@@ -51,30 +51,47 @@ export class StaffService {
   }
 
   static async updateStaff(
-    id: string,
-    data: Partial<{
-      fullName: string;
-      phone: string;
-      email: string;
-    }>
-  ) {
-    const staff = await Account.findOneAndUpdate(
-      {
-        _id: id,
-        role: Role.STAFF,
-      },
-      data,
-      {
-        new: true,
-      }
-    ).select("-password");
+  id: string,
+  data: Partial<{
+    fullName: string;
+    email: string;
+    phone: string;
+  }>
+) {
+  // Check if the staff exists
+  const staff = await Account.findOne({
+    _id: id,
+    role: Role.STAFF,
+  });
 
-    if (!staff) {
-      throw new Error("Staff not found");
+  if (!staff) {
+    throw new Error("Staff not found");
+  }
+
+  // Check email uniqueness
+  if (data.email) {
+    const existingEmail = await Account.findOne({
+      email: data.email.toLowerCase(),
+      _id: { $ne: id },
+    });
+
+    if (existingEmail) {
+      throw new Error("Email already exists");
     }
 
-    return staff;
+    data.email = data.email.toLowerCase();
   }
+
+  const updatedStaff = await Account.findByIdAndUpdate(
+    id,
+    data,
+    {
+      new: true,
+    }
+  ).select("-password");
+
+  return updatedStaff;
+}
 
   static async deactivateStaff(id: string) {
     const staff = await Account.findOneAndUpdate(
@@ -87,7 +104,7 @@ export class StaffService {
       },
       {
         new: true,
-      }
+      },
     );
 
     if (!staff) {
@@ -98,23 +115,23 @@ export class StaffService {
   }
 
   static async activateStaff(id: string) {
-  const staff = await Account.findOneAndUpdate(
-    {
-      _id: id,
-      role: Role.STAFF,
-    },
-    {
-      isActive: true,
-    },
-    {
-      new: true,
+    const staff = await Account.findOneAndUpdate(
+      {
+        _id: id,
+        role: Role.STAFF,
+      },
+      {
+        isActive: true,
+      },
+      {
+        new: true,
+      },
+    ).select("-password");
+
+    if (!staff) {
+      throw new Error("Staff not found");
     }
-  ).select("-password");
 
-  if (!staff) {
-    throw new Error("Staff not found");
+    return staff;
   }
-
-  return staff;
-}
 }
