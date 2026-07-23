@@ -24,3 +24,7 @@ export interface LoginResponse {
   token: string;
   user: SafeUserResponse;
 }
+
+export interface GoogleLoginInput {
+  credential: string;
+}

@@ -1,8 +1,3 @@
-// Receive request
-// Call service
-// Return response
-// Handle errors
-
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import { AuthRequest } from "../../types/auth-request";
@@ -83,6 +78,36 @@ static async adminOnly(
     success: true,
     message: "Welcome Admin!",
   });
+}
+
+static async googleLogin(
+  req: Request,
+  res: Response
+) {
+  try {
+
+    const result =
+      await AuthService.googleLogin(
+        req.body.credential
+      );
+
+    return res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      data: result,
+    });
+
+  } catch (error) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Google login failed",
+    });
+
+  }
 }
 
 }
