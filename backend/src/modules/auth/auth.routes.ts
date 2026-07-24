@@ -75,6 +75,12 @@ router.post("/login", AuthController.login);
  */
 
 router.post("/google", AuthController.googleLogin);
+router.post("/forgot-password", AuthController.forgotPassword);
+
+router.post("/reset-password/:token", AuthController.resetPassword);
+// router.post ("/forgot-password,
+
+// POST /auth/reset-password/:token
 /**
  * @swagger
  * /auth/me:

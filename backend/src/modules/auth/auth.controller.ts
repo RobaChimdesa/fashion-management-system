@@ -110,4 +110,60 @@ static async googleLogin(
   }
 }
 
+static async forgotPassword(
+  req: Request,
+  res: Response,
+) {
+  try {
+    await AuthService.forgotPassword(req.body.email);
+
+    res.status(200).json({
+      success: true,
+      message:
+        "If an account exists, a password reset email has been sent.",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong",
+    });
+  }
+}
+static async resetPassword(
+  req: Request,
+  res: Response
+) {
+  try {
+    const token = req.params.token;
+
+    if (!token || Array.isArray(token)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid reset token",
+      });
+    }
+
+    const { password } = req.body;
+
+    await AuthService.resetPassword(token, password);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successful",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Password reset failed",
+    });
+  }
+}
+
 }

@@ -15,4 +15,9 @@ export const env = {
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
 
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID!,
+  EMAIL_HOST: process.env.EMAIL_HOST!,
+  EMAIL_PORT: process.env.EMAIL_PORT!,
+  EMAIL_USER: process.env.EMAIL_USER!,
+  EMAIL_PASS: process.env.EMAIL_PASS!,
+  FRONTEND_URL: process.env.FRONTEND_URL!,
 };

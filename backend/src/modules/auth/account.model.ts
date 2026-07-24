@@ -74,7 +74,9 @@ export interface IAccount extends mongoose.Document {
   email: string;
   password?: string;
   phone?: string;
-
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
+  
   role: Role;
 
   preferredLanguage: "en" | "am" | "om";
@@ -112,6 +114,14 @@ const accountSchema = new Schema<IAccount>(
     phone: {
       type: String,
       trim: true,
+    },
+
+    resetPasswordToken: {
+      type: String,
+    },
+
+    resetPasswordExpires: {
+      type: Date,
     },
 
     role: {

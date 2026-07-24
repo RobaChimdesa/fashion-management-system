@@ -18,7 +18,6 @@
 //     }
 
 //     const hashedPassword = await bcrypt.hash(payload.password, 10);
-    
 
 //     const user = await Account.create({
 //       ...payload,
@@ -113,6 +112,8 @@ import { Customer } from "../customer/customer.model";
 
 import { env } from "../../config/env";
 import { Role } from "./auth.constants";
+import crypto from "crypto";
+import { EmailService } from "../email/email.service";
 
 import {
   RegisterInput,
@@ -128,9 +129,7 @@ export class AuthService {
   // ==========================
   // Register (Email & Password)
   // ==========================
-  static async register(
-    payload: RegisterInput
-  ): Promise<SafeUserResponse> {
+  static async register(payload: RegisterInput): Promise<SafeUserResponse> {
     const existingUser = await Account.findOne({
       email: payload.email.toLowerCase(),
     });
@@ -146,8 +145,7 @@ export class AuthService {
       email: payload.email.toLowerCase(),
       password: hashedPassword,
       phone: payload.phone,
-      preferredLanguage:
-        payload.preferredLanguage || "en",
+      preferredLanguage: payload.preferredLanguage || "en",
 
       role: Role.CUSTOMER,
 
@@ -170,9 +168,7 @@ export class AuthService {
   // ==========================
   // Login (Email & Password)
   // ==========================
-  static async login(
-    payload: LoginInput
-  ): Promise<LoginResponse> {
+  static async login(payload: LoginInput): Promise<LoginResponse> {
     const user = await Account.findOne({
       email: payload.email.toLowerCase(),
     }).select("+password");
@@ -183,19 +179,17 @@ export class AuthService {
 
     if (user.provider === "GOOGLE") {
       throw new Error(
-        "This account uses Google Sign-In. Please continue with Google."
+        "This account uses Google Sign-In. Please continue with Google.",
       );
     }
 
-    if (!user.password){
-      throw new Error(
-        "This account uses Google Sign-In."
-      )
+    if (!user.password) {
+      throw new Error("This account uses Google Sign-In.");
     }
 
     const passwordCorrect = await bcrypt.compare(
       payload.password,
-      user.password
+      user.password,
     );
 
     if (!passwordCorrect) {
@@ -203,9 +197,7 @@ export class AuthService {
     }
 
     if (!user.isActive) {
-      throw new Error(
-        "Your account has been deactivated."
-      );
+      throw new Error("Your account has been deactivated.");
     }
 
     const token = this.generateToken(user.id, user.role);
@@ -224,11 +216,8 @@ export class AuthService {
   // ==========================
   // Google Login
   // ==========================
-  static async googleLogin(
-    credential: string
-  ): Promise<LoginResponse> {
-    const googleUser =
-      await verifyGoogleToken(credential);
+  static async googleLogin(credential: string): Promise<LoginResponse> {
+    const googleUser = await verifyGoogleToken(credential);
 
     let user = await Account.findOne({
       email: googleUser.email.toLowerCase(),
@@ -279,15 +268,10 @@ export class AuthService {
     }
 
     if (!user.isActive) {
-      throw new Error(
-        "Your account has been deactivated."
-      );
+      throw new Error("Your account has been deactivated.");
     }
 
-    const token = this.generateToken(
-      user.id,
-      user.role
-    );
+    const token = this.generateToken(user.id, user.role);
 
     return {
       token,
@@ -303,11 +287,8 @@ export class AuthService {
   // ==========================
   // Current User
   // ==========================
-  static async getCurrentUser(
-    userId: string
-  ) {
-    const user = await Account.findById(userId)
-      .select("-password");
+  static async getCurrentUser(userId: string) {
+    const user = await Account.findById(userId).select("-password");
 
     if (!user) {
       throw new Error("User not found");
@@ -320,18 +301,14 @@ export class AuthService {
       role: user.role,
       provider: user.provider,
       avatar: user.avatar,
-      preferredLanguage:
-        user.preferredLanguage,
+      preferredLanguage: user.preferredLanguage,
     };
   }
 
   // ==========================
   // JWT Generator
   // ==========================
-  private static generateToken(
-    userId: string,
-    role: Role
-  ) {
+  private static generateToken(userId: string, role: Role) {
     return jwt.sign(
       {
         userId,
@@ -340,7 +317,60 @@ export class AuthService {
       env.JWT_SECRET,
       {
         expiresIn: "24h",
-      }
+      },
     );
+  }
+
+  static async forgotPassword(email: string) {
+    const user = await Account.findOne({
+      email: email.toLowerCase(),
+    });
+
+    if (!user) {
+      return;
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    user.resetPasswordToken = hashedToken;
+
+    user.resetPasswordExpires = new Date(Date.now() + 30 * 60 * 1000);
+
+    await user.save();
+
+    const resetLink = `${env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    await EmailService.sendResetPasswordEmail(
+      user.email,
+      user.fullName,
+      resetLink,
+    );
+  }
+  static async resetPassword(token: string, password: string) {
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await Account.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: {
+        $gt: new Date(),
+      },
+    });
+
+    if (!user) {
+      throw new Error("Invalid or expired reset token.");
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+
+    user.resetPasswordToken = undefined;
+
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
   }
 }
